@@ -1,0 +1,52 @@
+{
+  "name": "profound-utils",
+  "version": "1.0.0",
+  "description": "A Collection of Profound Utils",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProfoundLogic/profound-utils.git"
+  },
+  "keywords": [
+    "profound utils",
+    "profound",
+    "profoundjs",
+    "noderun",
+    "pjs",
+    "profound logic",
+    "profoundlogic",
+    "profound ui",
+    "profoundui",
+    "ibm i",
+    "ibmi",
+    "ibm",
+    "iseries",
+    "legacy",
+    "as400",
+    "as/400",
+    "rpg",
+    "rpgle",
+    "green screens",
+    "modernization"
+  ],
+  "author": "Profound Logic Software",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ProfoundLogic/profound-utils/issues"
+  },
+  "homepage": "https://github.com/ProfoundLogic/profound-utils#readme",
+  "devDependencies": {
+    "standard": "^12.0.1",
+    "pino-pretty": "^3.2.1"
+  },
+  "dependencies": {
+    "diff": "^4.0.1",
+    "pino": "^5.13.3"
+  },
+  "optionalDependencies": {
+    "idb-pconnector": "^1.0.8"
+  }
+}
