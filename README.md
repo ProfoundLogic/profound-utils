@@ -48,6 +48,12 @@ Then you can change your current folder into this folder
 $ cd profound-utils
 ```
 
+Finally, install all of the project dependencies from npm
+
+```
+$ npm i
+```
+
 ### Listing the Utils
 You can issue the following command to get a list of Utility commands currently available. Please see each section of this README for a detailed description on each utility.
 
