@@ -182,7 +182,9 @@ const validateParameters = async (outDir, fil, lib, mbr) => {
     // Check that output file is writeable
     const pathObj = { dir: resolve(outDir) }
     if (isDdsFile) {
-      pathObj.base = `${lib}.${fil}.${mbr}.json`
+      // 6457: per Rob, json file name should be memberName.json to make it easier for PJSCONVERT
+      // pathObj.base = `${lib}.${fil}.${mbr}.json`
+      pathObj.base = `${mbr}.json`
     } else {
       pathObj.base = parse(fil).name + '.json'
     }
