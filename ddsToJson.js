@@ -182,9 +182,9 @@ const validateParameters = async (outDir, fil, lib, mbr) => {
     // Check that output file is writeable
     const pathObj = { dir: resolve(outDir) }
     if (isDdsFile) {
-      // 6457: per Rob, json file name should be memberName.json to make it easier for PJSCONVERT
+      // 6457: per Rob, json file name should be membername.json in lowercase to make it easier for PJSCONVERT
       // pathObj.base = `${lib}.${fil}.${mbr}.json`
-      pathObj.base = `${mbr}.json`
+      pathObj.base = `${mbr.toLowerCase()}.json`
     } else {
       pathObj.base = parse(fil).name + '.json'
     }
@@ -300,7 +300,7 @@ const getDdsFromSrc = async (srcLines) => {
  * @returns {Promise<String>} The output JSON file name, or the error message if we reject.
  * @since 1.0.0
  */
-const main = async (outDir, srcFile, srcLib, srcMbr) => {
+const main = async (outDir, srcFile, srcLib, srcMbr, inUseLcNames) => {
   try {
     logger.debug('main() started with : ', typeof outDir, 'outDir =', outDir, typeof srcFile, 'srcFile =', srcFile, typeof srcLib, 'srcLib =', srcLib, typeof srcMbr, 'srcMbr =', srcMbr)
     logger.info('Verifying parameters...\n')
@@ -355,6 +355,35 @@ const main = async (outDir, srcFile, srcLib, srcMbr) => {
       dspf.dds = await getDdsFromSrc(srcLines)
     }
 
+    // If PUICVTDDS LCNAMES(*YES), convert all record format and field names to lowercase,
+    // to make the RDF work better in PJS in case-sensitive mode
+    if (inUseLcNames.toUpperCase() == "Y") {
+      var formats = dspf["formats"];
+      for (var i = 0; i < formats.length; i++) {
+        formats[i]["screen"]["record format name"] = formats[i]["screen"]["record format name"].toLowerCase();
+        var items = formats[i]["items"];
+        for (var j = 0; j < items.length; j++) {
+          var item = items[j];
+          if (item["record format name"]) {
+            item["record format name"] = item["record format name"].toLowerCase();
+            item["id"] = item["id"].toLowerCase();
+          }
+          if (item["grid"])
+            item["grid"] = item["grid"].toLowerCase();
+          if (typeof item["value"] == "object" && item["value"]["fieldName"]) {
+            item["value"]["fieldName"] = item["value"]["fieldName"].toLowerCase();
+            item["value"]["designValue"] = item["value"]["designValue"].toLowerCase();
+            item["id"] = item["id"].toLowerCase();
+          }
+          // if an item's property has "fieldName", need to change that too
+          for (var prop in item) {
+            if (item[prop]["fieldName"])
+              item[prop]["fieldName"] = item[prop]["fieldName"].toLowerCase();
+          }
+        }
+      }
+    }
+
     logger.info(`Writing output file : ${outFileName}\n`)
 
     await fsPromises.writeFile(outFileName, JSON.stringify(dspf, null, 2))
@@ -372,7 +401,7 @@ if (require.main.filename !== module.filename) {
   logger.info(`            DDS version, such as performing mass Find/Replace changes in`)
   logger.info(`            your favorite Source editor, moving the screen to a Git repository, etc.\n`)
   logger.info(`Usage : ddsToJson output-directory input-DDS-file [input-library] [input-member]`)
-} else if (process.argv.length > 6) {
+} else if (process.argv.length > 7) {
   logger.error(`Too many parameters were specified.\n`)
   logger.info(`Usage : ddsToJson output-directory input-DDS-file [input-library] [input-member]`)
 } else if (process.argv.length !== 4 && process.argv.length < 6) {
@@ -383,8 +412,9 @@ if (require.main.filename !== module.filename) {
   const inFil = process.argv[3]
   const inLib = process.argv[4]
   const inMbr = process.argv[5]
+  const inUseLcNames = process.argv[6]
 
-  main(outDirectory, inFil, inLib, inMbr)
+  main(outDirectory, inFil, inLib, inMbr, inUseLcNames)
     .then(result => {
       if (isDdsFile) {
         logger.info(`DDS file ${inLib.toUpperCase()}/${inFil.toUpperCase()}.${inMbr.toUpperCase()} was converted successfully.\n`)
