@@ -361,6 +361,11 @@ const main = async (outDir, srcFile, srcLib, srcMbr, inUseLcNames) => {
       var formats = dspf["formats"];
       for (var i = 0; i < formats.length; i++) {
         formats[i]["screen"]["record format name"] = formats[i]["screen"]["record format name"].toLowerCase();
+        let screen = formats[i]["screen"];
+        if (screen["return cursor record"]) 
+          screen["return cursor record"]["fieldName"] = screen["return cursor record"]["fieldName"].toLowerCase();
+        if (screen["return cursor field"]) 
+          screen["return cursor field"]["fieldName"] = screen["return cursor field"]["fieldName"].toLowerCase();
         var items = formats[i]["items"];
         for (var j = 0; j < items.length; j++) {
           var item = items[j];
