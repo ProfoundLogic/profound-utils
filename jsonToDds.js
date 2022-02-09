@@ -277,7 +277,7 @@ const conversionV1 = async (newJsonSrcObj, origSrcLines) => {
  * @returns {Promise<String>} The error message if we reject.
  * @since 1.0.0
  */
-const main = async (inJson, srcFile, srcLib, srcMbr, srcFilOrig, srcLibOrig, srcMbrOrig) => {
+const main = async (inJson, srcFile, srcLib, srcMbr) => {
   logger.debug('main() started with : ', typeof inJson, 'inJson =', inJson, typeof srcFile, 'srcFile =', srcFile, typeof srcLib, 'srcLib =', srcLib, typeof srcMbr, 'srcMbr =', srcMbr)
   const CONVERT_METHOD = 'JSON_TO_DDS_CONVERSION_METHOD'
   try {
@@ -321,8 +321,7 @@ const main = async (inJson, srcFile, srcLib, srcMbr, srcFilOrig, srcLibOrig, src
 
       if (isDdsFile) {
         const parts = parse(inJson).name.split('.')
-        // originalDds = await readIbmISrcMbr(parts[1], parts[0], parts[2])
-        originalDds = await readIbmISrcMbr(srcFilOrig, srcLibOrig, srcMbrOrig);
+        originalDds = await readIbmISrcMbr(parts[1], parts[0], parts[2])
       } else {
         const originalDdsFile = process.env.JSON_TO_DDS_ORIGINAL_DDS_FILE
         if (typeof originalDdsFile === 'string') {
@@ -383,7 +382,7 @@ if (require.main.filename !== module.filename) {
   logger.info(`            format. This will allow you to convert a DSPF back to native`)
   logger.info(`            format for compile on IBM i.\n`)
   logger.info(`Usage : jsonToDds input-JSON-file output-DDS-file [output-library] [output-member]`)
-} else if (process.argv.length > 9) {
+} else if (process.argv.length > 6) {
   logger.error(`Too many parameters were specified.\n`)
   logger.info(`Usage : jsonToDds input-JSON-file output-DDS-file [output-library] [output-member]`)
 } else if (process.argv.length !== 4 && process.argv.length < 6) {
@@ -394,11 +393,8 @@ if (require.main.filename !== module.filename) {
   const outFil = process.argv[3]
   const outLib = process.argv[4]
   const outMbr = process.argv[5]
-  const srcFilOrig = process.argv[6];
-  const srcLibOrig = process.argv[7];
-  const srcMbrOrig = process.argv[8];
 
-  main(inJsonFile, outFil, outLib, outMbr, srcFilOrig, srcLibOrig, srcMbrOrig)
+  main(inJsonFile, outFil, outLib, outMbr)
     .then(result =>
       logger.info(`JSON file ${inJsonFile} was converted successfully.\n`)
     )
