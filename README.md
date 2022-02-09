@@ -122,10 +122,15 @@ $ node ddsToJson output-directory input-DDS-file [input-library] [input-member]
 
 This utility will convert an existing JSON-based Rich Display File into DDS format. This will allow you to convert JSON files back into native DDS format, ready for compile and/or testing.
 
+This conversion will take ALL the existing DDS source lines from the OLD DDS Source File/Member, but will insert the changed JSON sections from the NEW source file, and insert them into the HTML tags. This eliminates any risks from parsing the NEW file, but means that you cannot do the following:
+1) Add or Remove any Record Formats in the new source file.
+2) Add or remove any Bound fields in the new source file.
+
+
 ### Syntax
 
 ```
-$ node jsonToDds input-JSON-file output-DDS-file [output-library] [output-member]
+$ node jsonToDds input-JSON-file output-DDS-file output-library output-member original-DDS-file original-library original-member
 ```
 
 ### Parameter Descriptions
