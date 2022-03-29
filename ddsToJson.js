@@ -362,10 +362,13 @@ const main = async (outDir, srcFile, srcLib, srcMbr, inUseLcNames) => {
       for (var i = 0; i < formats.length; i++) {
         formats[i]["screen"]["record format name"] = formats[i]["screen"]["record format name"].toLowerCase();
         let screen = formats[i]["screen"];
-        if (screen["return cursor record"]) 
-          screen["return cursor record"]["fieldName"] = screen["return cursor record"]["fieldName"].toLowerCase();
-        if (screen["return cursor field"]) 
-          screen["return cursor field"]["fieldName"] = screen["return cursor field"]["fieldName"].toLowerCase();
+        // Process screen properties
+        for (var prop in screen) {
+          if (screen[prop] && typeof screen[prop]["fieldName"] === "string" && screen[prop]["dataType"] !== "expression") {
+            screen[prop]["fieldName"] = screen[prop]["fieldName"].toLowerCase();
+          }
+        }
+        // Process item properties
         var items = formats[i]["items"];
         for (var j = 0; j < items.length; j++) {
           var item = items[j];
