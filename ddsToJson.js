@@ -373,17 +373,21 @@ const main = async (outDir, srcFile, srcLib, srcMbr, inUseLcNames) => {
             item["record format name"] = item["record format name"].toLowerCase();
             item["id"] = item["id"].toLowerCase();
           }
-          if (item["grid"])
+          if (item["grid"]) {
             item["grid"] = item["grid"].toLowerCase();
-          if (typeof item["value"] == "object" && item["value"]["fieldName"]) {
-            item["value"]["fieldName"] = item["value"]["fieldName"].toLowerCase();
-            item["value"]["designValue"] = item["value"]["designValue"].toLowerCase();
+          }
+          // lower-case id of bound field
+          if (typeof item["value"] == "object" && typeof item["value"]["fieldName"] === "string" && item["value"]["dataType"] !== "expression" && typeof item["id"] === "string" && item["id"].endsWith(item["value"]["fieldName"])) {
             item["id"] = item["id"].toLowerCase();
           }
-          // if an item's property has "fieldName", need to change that too
+          // if an item's property has "fieldName", it needs to be lower-cased
           for (var prop in item) {
-            if (item[prop]["fieldName"])
+            if (item[prop] && typeof item[prop]["fieldName"] === "string" && item[prop]["dataType"] !== "expression") {
               item[prop]["fieldName"] = item[prop]["fieldName"].toLowerCase();
+              if (typeof item[prop]["designValue"] === "string" && item[prop]["designValue"].startsWith("[")) {
+                item[prop]["designValue"] = item[prop]["designValue"].toLowerCase();
+              }
+            }
           }
         }
       }
