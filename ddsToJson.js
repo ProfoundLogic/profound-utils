@@ -360,8 +360,11 @@ const main = async (outDir, srcFile, srcLib, srcMbr, inUseLcNames) => {
     if (inUseLcNames.toUpperCase() == "Y") {
       var formats = dspf["formats"];
       for (var i = 0; i < formats.length; i++) {
-        formats[i]["screen"]["record format name"] = formats[i]["screen"]["record format name"].toLowerCase();
         let screen = formats[i]["screen"];
+        screen["record format name"] = screen["record format name"].toLowerCase();
+        if (screen["design overlay formats"]) screen["design overlay formats"] = screen["design overlay formats"].toLowerCase();
+        if (screen["window reference"]) screen["window reference"] = screen["window reference"].toLowerCase();
+
         // Process screen properties
         for (var prop in screen) {
           if (screen[prop] && typeof screen[prop]["fieldName"] === "string" && screen[prop]["dataType"] !== "expression") {
